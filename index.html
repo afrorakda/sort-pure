@@ -32,22 +32,28 @@
         .container {
             width: 100%;
             max-width: 420px;
-            padding: 40px 20px;
+            padding: 20px;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
         }
 
-        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
-        .subtitle { font-size: 1rem; color: var(--text-gray); font-weight: 600; margin-bottom: 30px; }
+        header { margin-bottom: 15px; }
+        h1 { font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: -1px; }
+        .subtitle { font-size: 0.85rem; color: var(--text-gray); font-weight: 600; margin-top: 4px; }
 
-        .input-wrapper { position: relative; margin-bottom: 20px; }
+        .input-wrapper { 
+            position: relative; 
+            flex-grow: 1; /* ビューワーを可能な限り広げる */
+            min-height: 300px;
+            margin-bottom: 15px;
+        }
         
         textarea {
             width: 100%;
-            height: 250px;
-            padding: 20px;
+            height: 100%;
+            padding: 15px;
             padding-right: 45px;
             border: 2px solid var(--accent);
             border-radius: var(--radius);
@@ -63,14 +69,14 @@
             -webkit-text-fill-color: var(--main) !important;
             opacity: 1 !important;
         }
-        textarea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
+        textarea::placeholder { color: #ccc; -webkit-text-fill-color: #ccc; }
 
         .clr-btn {
             position: absolute;
-            right: 12px;
-            top: 12px;
-            width: 28px;
-            height: 28px;
+            right: 10px;
+            top: 10px;
+            width: 30px;
+            height: 30px;
             background: rgba(0,0,0,0.05);
             border: none;
             border-radius: 50%;
@@ -90,43 +96,53 @@
             background: var(--main);
             color: #fff;
             border: none;
-            padding: 20px;
+            padding: 18px;
             border-radius: var(--radius);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
             cursor: pointer;
-            transition: transform 0.1s;
-            margin-bottom: 30px;
+            transition: all 0.2s;
+            margin-bottom: 20px;
         }
         .sort-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .sort-btn.success { background: #4caf50; }
 
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--main); color: #fff;
-            padding: 12px 24px; border-radius: 20px; font-size: 0.9rem; font-weight: 700;
-            opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1000;
+        /* 下部ボタンの横並び圧縮 */
+        .footer-btns { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px;
         }
-
-        footer { margin-top: auto; padding-top: 40px; font-size: 12px; color: #777; line-height: 1.8; font-weight: 500; }
-        footer a { color: inherit; text-decoration: underline; }
-        .footer-btns { margin-bottom: 30px; }
         .kofi-btn {
-            display: inline-block; background: var(--main); color: #fff;
-            padding: 14px 28px; border-radius: var(--radius);
-            text-decoration: none; font-weight: bold; font-size: 15px; margin-bottom: 15px;
+            flex: 6;
+            background: var(--main); color: #fff;
+            padding: 12px; border-radius: var(--radius);
+            text-decoration: none; font-weight: bold; font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
         }
         .home-btn {
-            display: block; width: 75%; margin: 0 auto; background: var(--accent);
-            color: var(--main); border: none; padding: 12px;
-            border-radius: var(--radius); font-weight: 800; font-size: 14px; cursor: pointer;
+            flex: 4;
+            background: var(--accent); color: var(--main);
+            border: none; padding: 12px;
+            border-radius: var(--radius); font-weight: 800; font-size: 12px; 
+            cursor: pointer;
         }
+
+        footer { 
+            font-size: 10px; 
+            color: #aaa; 
+            line-height: 1.6; 
+            font-weight: 500;
+            padding-bottom: 10px;
+        }
+        footer a { color: inherit; text-decoration: underline; }
 
         #modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 100;
         }
         .modal-content {
-            background: #fff; width: 85%; max-width: 340px; padding: 35px;
+            background: #fff; width: 85%; max-width: 340px; padding: 30px;
             border-radius: var(--radius); text-align: left; position: relative;
         }
         .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
@@ -134,22 +150,22 @@
 </head>
 <body>
 
-<div id="toast">Sorted!</div>
-
 <div class="container">
-    <h1>Sort Pure</h1>
-    <p class="subtitle">Clean, case-insensitive list sorter.</p>
+    <header>
+        <h1>Sort Pure</h1>
+        <p class="subtitle">Clean, case-insensitive list sorter.</p>
+    </header>
 
     <div class="input-wrapper">
         <textarea id="textInput" placeholder="Paste your list here..." oninput="updateUI()"></textarea>
         <button class="clr-btn" id="clrBtn" onclick="clearText()">×</button>
     </div>
 
-    <button class="sort-btn" onclick="executeSort()">SORT (A→Z)</button>
+    <button class="sort-btn" id="sortBtn" onclick="executeSort()">SORT (A→Z)</button>
 
     <div class="footer-btns">
         <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
-        <button class="home-btn" onclick="showModal()">Add to Home Screen</button>
+        <button class="home-btn" onclick="showModal()">Add Home</button>
     </div>
 
     <footer>
@@ -171,7 +187,7 @@
 <script>
     const textInput = document.getElementById('textInput');
     const clrBtn = document.getElementById('clrBtn');
-    const toast = document.getElementById('toast');
+    const sortBtn = document.getElementById('sortBtn');
 
     function updateUI() {
         clrBtn.classList.toggle('active', textInput.value !== '');
@@ -183,30 +199,40 @@
         textInput.focus();
     }
 
-    function executeSort() {
+    async function executeSort() {
         const rawText = textInput.value;
         if (!rawText.trim()) return;
 
-        // 改行で分割し、空行を除去して配列化
+        // 自然順・大文字小文字無視ソート
         let lines = rawText.split(/\r?\n/).filter(line => line.trim() !== '');
-
-        // 自然な順序、大文字小文字無視のソート
         const collator = new Intl.Collator(undefined, {
             numeric: true,
             sensitivity: 'base'
         });
-
         lines.sort(collator.compare);
-
-        // 結果を書き戻し
-        textInput.value = lines.join('\n');
         
-        showToast();
+        const result = lines.join('\n');
+        textInput.value = result;
+
+        // 自動コピー
+        try {
+            await navigator.clipboard.writeText(result);
+            feedback();
+        } catch (err) {
+            // コピー失敗時もソートは完了しているので一応通知
+            feedback();
+        }
     }
 
-    function showToast() {
-        toast.style.opacity = '1';
-        setTimeout(() => toast.style.opacity = '0', 1500);
+    function feedback() {
+        const originalText = "SORT (A→Z)";
+        sortBtn.innerText = "COPIED!";
+        sortBtn.classList.add('success');
+        
+        setTimeout(() => {
+            sortBtn.innerText = originalText;
+            sortBtn.classList.remove('success');
+        }, 1500);
     }
 
     function showModal() { document.getElementById('modal').style.display = 'flex'; }
